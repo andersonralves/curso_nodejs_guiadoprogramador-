@@ -33,9 +33,10 @@ const flash = require('connect-flash')
     // Public
     app.use(express.static(path.join(__dirname, 'public')))
 
+    // Exemple Middleware
     app.use( (req, res, next) => {
-        console.log('EU SOU UM MIDDLEWARE')
-        next()
+        //console.log('EU SOU UM MIDDLEWARE')
+        next();
     })
 
 // Rotas

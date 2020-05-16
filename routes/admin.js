@@ -3,7 +3,10 @@ const router = express.Router()
 const mongoose = require('mongoose')
 
 require("../models/Categoria")
-const Categoria = mongoose.model("categorias")
+const Categoria = mongoose.model("categorias");
+
+require("../models/Postagem")
+const Postagem = mongoose.model("postagens");
 
 router.get('/', (req, res) => {
     res.render('admin/index')
@@ -102,6 +105,57 @@ router.post("/categorias/delete", (req, res) => {
         req.flash("error_msg", "Houve um erro interno ao deletar a categoria");
         res.redirect("/admin/categorias");
     });
+})
+
+// POSTAGENS
+router.get("/postagens", (req, res) => {
+    Postagem.find().populate("categoria").sort({data: "DESC"}).lean().then((postagens) => {
+        res.render("admin/postagens", {postagens: postagens})
+    }).catch((err) => {
+        req.flash("error_msg", "Houve um erro ao listar as postagens o formulário")
+        res.redirect("/admin")
+    });      
+});
+
+router.get("/postagens/add", (req, res) => {
+    Categoria.find().sort({nome: "ASC"}).lean().then((categorias) => {
+        res.render("admin/addpostagem", {categorias: categorias})
+    }).catch((err) => {
+        req.flash("error_msg", "Houve um erro ao carregar o formulário")
+        res.redirect("/admin")
+    });   
+});
+
+router.post("/postagens/nova", (req, res) => {
+
+    var erros = [];
+
+    if (req.body.categoria == "0") {
+        erros.push({text: "Categoria inválida, registre uma categoria"})
+    }
+
+    if (erros.length > 0) {
+        res.render("admin/addpostagem", {erros: erros})
+        return;
+    }
+    
+    let novaPostagem = {
+        titulo: req.body.titulo,
+        slug: req.body.slug,
+        descricao: req.body.descricao,
+        conteudo: req.body.conteudo,
+        categoria: req.body.categoria
+    }
+
+    new Postagem(novaPostagem).save()
+    .then(() => {
+        req.flash("success_msg", "Postagem criada com sucesso!")
+        res.redirect('/admin/postagens')
+    })
+    .catch( (error) => {
+        req.flash("error_msg", "Ocorreu um erro ao salvar a postagem. Tente novamente!")
+        res.redirect("/admin")
+    })
 })
 
 module.exports = router
