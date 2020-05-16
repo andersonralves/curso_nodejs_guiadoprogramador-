@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+      
+  cursonode:
+    image: node:14
+    container_name: cursonode    
+    command: bash -c "npm i -g nodemon && nodemon app.js"
+    working_dir: /app    
+    ports:
+      - 3000
+    volumes:
+      - /docker/node:/app
+    networks:  
+      - proxy   
+      - backend
+  
+  mongo:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    #environment: 
+      #MONGO_INITDB_ROOT_USERNAME: root
+      #MONGO_INITDB_ROOT_PASSWORD: 123456
+      #AUTH: "no"
+    ports: 
+      - 27017:27017
+    volumes:
+      - mongodb-data:/data/db
+    networks: 
+      - backend    
+
+volumes:
+  mongodb-data:
+
+networks:
+  proxy:
+    external:
+      name: net-proxy
+  backend:
+    driver: bridge
+
+
+
