@@ -8,10 +8,12 @@
             <hr>  
             <h3>{{titulo}}</h3>
             <p>{{descricao}}</p>
-            <small>Data de publicação: {{data}}</small>
+            <small>Data de publicação: {{data}}</small> <br>
+            <small>Categoria: {{categoria.nome}}</small> <br> <br>
+                        
+            <a href="/admin/postagens/edit/{{_id}}" class="btn btn-info">Editar</a>
+            <a href="/admin/postagens/delete/{{_id}}" class="btn btn-danger">Excluir</a>         
 
-            <br>
-            <button class="btn btn-sm btn-secondary mt-2">Leia mais</button>
         </div>
     </div>
 {{else}}
