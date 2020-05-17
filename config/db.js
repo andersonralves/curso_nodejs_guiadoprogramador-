@@ -13,7 +13,13 @@ const mongoUri = `mongodb://${mongoUser}:${mongoPass}@${mongoHost}:${mongoPort}/
 const mongoHost = "mongodb";
 const mongoDb = "curso_nodejs";
 
-const mongoUri = `mongodb://${mongoHost}/${mongoDb}`;
+let mongoUri = "";
+
+if (process.env.NODE_ENV == "production") { 
+  mongoUri = "mongodb+srv://admin:admin@cluster0-8gbdz.mongodb.net/test?retryWrites=true&w=majority"
+} else {
+  mongoUri = `mongodb://${mongoHost}/${mongoDb}`;
+}
 
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
